@@ -90,7 +90,8 @@ int main(int argc, char *argv[]) {
 	time_t t;
 	/* Intializes random number generator to be used by consumer */
     srand((unsigned) time(&t));
-	
+
+    
 	/* Fork 1 consumer process and K producer processes */
 	pid_t childPID;
 	pid_t consumerPID=0;
@@ -157,6 +158,7 @@ int main(int argc, char *argv[]) {
 				{ printf("shmat failed, errno: %d\n",errno); exit(1); }
 			bufferTable[nr].size--;
 			fprintf(f,"B%d C[%d]\n",nr,bufferTable[nr].size);
+			fflush(f);
 			if (shmdt(bufferTable) == -1)
 				{ printf("shmdt failed\n"); exit(1); }
 			V(idsemTable,MUTEX);
@@ -181,16 +183,17 @@ int main(int argc, char *argv[]) {
 				}
 				
 			}
+			bufferTable[nr].size++;
 			if (shmdt(bufferTable) == -1)
 				{ printf("shmat failed\n"); exit(1); }
 			
 			
 			
-			if ((bufferTable = shmat(idshmTable,NULL,0)) == (void*) -1)
+			/*if ((bufferTable = shmat(idshmTable,NULL,0)) == (void*) -1)
 				{ printf("shmat failed\n"); exit(1); }
 			bufferTable[nr].size++;
 			if (shmdt(bufferTable) == -1)
-				{ printf("shmdt failed\n"); exit(1); }
+				{ printf("shmdt failed\n"); exit(1); }*/
 			
 			
 			V(idsemTable,MUTEX);
@@ -207,11 +210,14 @@ int main(int argc, char *argv[]) {
 			V(idsemBuffer[nr],MUTEX);
 			V(idsemBuffer[nr],FULL);
 			
+			P(idsemTable,MUTEX);			
 			if ((bufferTable = shmat(idshmTable,NULL,0)) == (void*) -1)
 				{ printf("shmat failed\n"); exit(1); }
 			fprintf(f,"B%d P%d[%d]\n",nr,getpid()-parentPID,bufferTable[nr].size);
+			fflush(f);
 			if (shmdt(bufferTable) == -1)
 				{ printf("shmdt failed\n"); exit(1); }	
+			V(idsemTable,MUTEX);
 			
 		}
 	}
