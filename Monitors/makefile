@@ -3,4 +3,3 @@ all: main.cpp list.h bufor.h monitor.h
 	
 clean:
 	rm *.txt
-	rm *.o
