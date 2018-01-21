@@ -14,9 +14,7 @@ class VirtualDisk {
 	static const unsigned BMAP_SIZE = 1;
 	static const unsigned INODES_SIZE = 43;
 	char bitmap[BMAP_SIZE*BLOCK_SIZE];
-	char* inode_buf;
 	unsigned N;							/* number of blocks of data */
-	unsigned* start_of_data;			/* NR_OF_BLOCKS*(1+sizeof(inode)*8) */
 	struct inode {
 		char name[32];
 		unsigned dataSize;
@@ -24,20 +22,13 @@ class VirtualDisk {
 	};
 	std::vector<inode> inodes;
 	typedef char buffer[BLOCK_SIZE];
-	
 	std::string name;
 	unsigned size; 
-
-	/*unsigned alloc(unsigned);
-	void defragment();
-	void close();
-	inode *find_inode_by_name(std::string);
-	static int cmp_inodes(inode, inode);*/
 	unsigned CountFreeBlocks();
-	
+	int FindInodeByName(std::string s);
 
 public:
-	int FindInodeByName(std::string s);
+	
 	VirtualDisk(std::string name);
 	~VirtualDisk();
 	void CreateFile(unsigned);
@@ -47,20 +38,8 @@ public:
 	void Rename(std::string,std::string);
 	void RemoveFile(std::string);
 	void ListFiles();
-	/*void download_file(std::string);
-	void rename_file(std::string, std::string);
-	void remove_file(std::string);
-	void list_files();*/
 	void Map();
-	/*void open();
-	static std::string get_title()
-	{
-	return std::string
-	(
-	  "\033[1mWirtualny system plikow\n\033[m"
-	  "Autor: Michal Artur Krawczak\n"
-	);
-	}*/
+
 	class NotEnoughSpace: public std::exception
 	{
 	const char* what() const throw() 
