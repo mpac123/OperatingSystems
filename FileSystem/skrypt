@@ -1,0 +1,26 @@
+#!/bin/bash
+echo "-------------Skrypt testowy-----------------"
+echo "Tworze nowy dysk o rozmiarze 20kB"
+./VirtualDisk -f dysk -c 20
+./VirtualDisk -f dysk -M
+echo "Kopiuje male pliki na dysk"
+./VirtualDisk -f dysk -u test587B.txt
+./VirtualDisk -f dysk -u test599B.txt
+./VirtualDisk -f dysk -u test613B.txt
+./VirtualDisk -f dysk -u test660B.txt
+./VirtualDisk -f dysk -u test925B.txt
+./VirtualDisk -f dysk -l
+./VirtualDisk -f dysk -M
+echo "Zmieniam nazwe pliku test613B.txt na kopiowany.txt"
+./VirtualDisk -f dysk -m test613B.txt kopiowany.txt
+echo "Pobieram plik z dysku"
+./VirtualDisk -f dysk -d kopiowany.txt
+echo "Usuwam niektore pliki"
+./VirtualDisk -f dysk -r test599B.txt
+./VirtualDisk -f dysk -r test660B.txt
+./VirtualDisk -f dysk -l
+./VirtualDisk -f dysk -M
+echo "Kopiuje nowe pliki"
+./VirtualDisk -f dysk -u test4_1kB.txt
+./VirtualDisk -f dysk -l
+./VirtualDisk -f dysk -M
